@@ -436,7 +436,7 @@ abstract contract BaseToken {
     );
 }
 
-pragma solidity =0.8.4;
+pragma solidity >=0.8.4;
 
 contract StandardToken is IERC20, Ownable, BaseToken {
     using SafeMath for uint256;

@@ -22,6 +22,8 @@ contract PresaleFactoryNew {
     _;
   }
 
+  event CreateEvent(address indexed tokenAddress);
+
   constructor() {
     feeTo = msg.sender;
     flatFee = 10_000_000 gwei;
@@ -54,12 +56,17 @@ contract PresaleFactoryNew {
     uint256 _presale_start,
     uint256 _presale_end
   ) external payable enoughFee returns (address) {
+    require(_raise_min > _raise_max, "Raise_max must more than raise_min");
+    require(_hardcap > _softcap, "Hardcap must more than softcap");
+    require(_softcap > _hardcap/2, "Softcap must more than hardcap * 50%");
+    require(_presale_end > _presale_start, "End date cannot be earlier than start date");
     refundExcessiveFee();
     PresaleNew newToken = new PresaleNew(
       msg.sender, _sale_token, _token_rate, _raise_min, _raise_max,
       _softcap, _hardcap, _whitelist, 
       _presale_start, _presale_end
     );
+    emit CreateEvent(address(newToken));
     payable(feeTo).transfer(flatFee);
     return address(newToken);
   }
